@@ -30,17 +30,11 @@ type RSS struct {
 	} `xml:"channel"`
 }
 
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Printf("URL arg is only required.")
-		return
-	}
-	url := os.Args[1]
-
+func fetchRSS(url string) (RSS, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Printf("Fetching RSS failed. %#v", err)
-		return
+		return RSS{}, err
 	}
 
 	defer resp.Body.Close()
@@ -48,12 +42,27 @@ func main() {
 	b, err := io.ReadAll(resp.Body)
 	if err != nil && err != io.EOF {
 		fmt.Printf("io.ReadAll error occurred. %#v", err)
-		return
+		return RSS{}, err
 	}
 
 	var rss RSS
 	if err := xml.Unmarshal(b, &rss); err != nil {
 		fmt.Printf("Parsing XML Failed. %#v", err)
+		return RSS{}, err
+	}
+
+	return rss, nil
+}
+
+func main() {
+	if len(os.Args) != 2 {
+		fmt.Printf("URL arg is only required.")
+		return
+	}
+	url := os.Args[1]
+
+	rss, err := fetchRSS(url)
+	if err != nil {
 		return
 	}
 
