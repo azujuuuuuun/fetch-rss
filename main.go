@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
@@ -33,7 +34,7 @@ type RSS struct {
 func fetchRSS(url string) (RSS, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("Fetching RSS failed. %#v", err)
+		log.Fatalf("Fetching RSS failed. %#v", err)
 		return RSS{}, err
 	}
 
@@ -41,13 +42,13 @@ func fetchRSS(url string) (RSS, error) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil && err != io.EOF {
-		fmt.Printf("io.ReadAll error occurred. %#v", err)
+		log.Fatalf("io.ReadAll error occurred. %#v", err)
 		return RSS{}, err
 	}
 
 	var rss RSS
 	if err := xml.Unmarshal(b, &rss); err != nil {
-		fmt.Printf("Parsing XML Failed. %#v", err)
+		log.Fatalf("Parsing XML Failed. %#v", err)
 		return RSS{}, err
 	}
 
@@ -56,7 +57,7 @@ func fetchRSS(url string) (RSS, error) {
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Printf("URL arg is only required.")
+		log.Fatal("URL arg is only required.")
 		return
 	}
 	url := os.Args[1]
