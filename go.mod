@@ -1,3 +1,3 @@
-module github.com/azujuuuuuun/rss-fetch-cli
+module github.com/azujuuuuuun/fetch-rss
 
 go 1.19
