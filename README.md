@@ -1,3 +1,3 @@
-# rss-fetch-cli
+# fetch-rss
 
 RSS fetch CLI
