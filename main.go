@@ -65,6 +65,10 @@ func main() {
 		return
 	}
 
-	// TODO: Format output shape
-	fmt.Printf("%#v", rss)
+	for _, item := range rss.Channel.Item {
+		fmt.Println(rss.Channel.Title)
+		fmt.Printf("[%v](%v)", item.Title, item.Link)
+		fmt.Println(item.Description)
+		fmt.Println("---------------")
+	}
 }
