@@ -34,22 +34,19 @@ type RSS struct {
 func fetchRSS(url string) (*RSS, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalf("Fetching RSS failed. %#v", err)
-		return nil, err
+		return nil, fmt.Errorf("Fetching RSS failed. %#v", err)
 	}
 
 	defer resp.Body.Close()
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil && err != io.EOF {
-		log.Fatalf("io.ReadAll error occurred. %#v", err)
-		return nil, err
+		return nil, fmt.Errorf("io.ReadAll error occurred. %#v", err)
 	}
 
 	var rss RSS
 	if err := xml.Unmarshal(b, &rss); err != nil {
-		log.Fatalf("Parsing XML Failed. %#v", err)
-		return nil, err
+		return nil, fmt.Errorf("Parsing XML Failed. %#v", err)
 	}
 
 	return &rss, nil
@@ -64,6 +61,7 @@ func main() {
 
 	rss, err := fetchRSS(url)
 	if err != nil {
+		log.Fatalf("Fetching RSS failed. %#v", err)
 		return
 	}
 
