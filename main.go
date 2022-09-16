@@ -31,11 +31,11 @@ type RSS struct {
 	} `xml:"channel"`
 }
 
-func fetchRSS(url string) (RSS, error) {
+func fetchRSS(url string) (*RSS, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalf("Fetching RSS failed. %#v", err)
-		return RSS{}, err
+		return nil, err
 	}
 
 	defer resp.Body.Close()
@@ -43,16 +43,16 @@ func fetchRSS(url string) (RSS, error) {
 	b, err := io.ReadAll(resp.Body)
 	if err != nil && err != io.EOF {
 		log.Fatalf("io.ReadAll error occurred. %#v", err)
-		return RSS{}, err
+		return nil, err
 	}
 
 	var rss RSS
 	if err := xml.Unmarshal(b, &rss); err != nil {
 		log.Fatalf("Parsing XML Failed. %#v", err)
-		return RSS{}, err
+		return nil, err
 	}
 
-	return rss, nil
+	return &rss, nil
 }
 
 func main() {
